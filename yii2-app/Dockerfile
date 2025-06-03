@@ -11,10 +11,14 @@ COPY ./yii2-app /var/www/html/yii2-app
 
 WORKDIR /var/www/html/yii2-app
 
-RUN composer install --no-dev --optimize-autoloader
+RUN composer install --optimize-autoloader
 
 COPY ./yii2-app/apache-site.conf /etc/apache2/sites-available/000-default.conf
 
 RUN chown -R www-data:www-data /var/www/html/yii2-app
+
+ENV YII_ENV=prod 
+
+ENV YII_ENV_DEV=0
 
 EXPOSE 80
