@@ -54,3 +54,15 @@ jobs:
             else
               docker stack deploy -c /home/ubuntu/docker-swarm/deploy.yaml yii2
             fi
+            
+      - name: Check NGINX & Docker status
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            sudo systemctl status nginx
+            docker service ls
+            curl -I localhost
+

@@ -108,6 +108,21 @@
         dest: /home/ubuntu/docker-swarm/deploy.yaml
         mode: '0644'
 
+    - name: Stop and disable Apache
+      systemd:
+        name: apache2
+        enabled: false
+        state: stopped
+      ignore_errors: true
+
+    - name: Remove Apache
+      apt:
+        name: apache2
+        state: absent
+        purge: yes
+      ignore_errors: true
+
+
     - name: Create NGINX site config directory if not exists
       file:
         path: /etc/nginx/sites-available
