@@ -96,6 +96,18 @@
       changed_when: "'This node is already part of a swarm' not in swarm_result.stderr"
       ignore_errors: true
 
+    - name: Create deploy folder
+      file:
+        path: /home/ubuntu/docker-swarm
+        state: directory
+        mode: '0755'
+
+    - name: Copy Docker Swarm deploy.yaml
+      copy:
+        src: ../docker-swarm/deploy.yaml
+        dest: /home/ubuntu/docker-swarm/deploy.yaml
+        mode: '0644'
+
     - name: Create NGINX site config directory if not exists
       file:
         path: /etc/nginx/sites-available

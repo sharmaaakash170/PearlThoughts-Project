@@ -48,6 +48,9 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            ls -lrt
-            docker service update --image ${{ secrets.DOCKER_USERNAME }}/yii2-app:latest yii2_yii2-app || \
-            docker stack deploy -c /home/ubuntu/docker-swarm/deploy.yaml yii2
+            ls -lrt /home/ubuntu/docker-swarm
+            if docker service inspect yii2_yii2-app > /dev/null 2>&1; then
+              docker service update --image ${{ secrets.DOCKER_USERNAME }}/yii2-app:latest yii2_yii2-app
+            else
+              docker stack deploy -c /home/ubuntu/docker-swarm/deploy.yaml yii2
+            fi
