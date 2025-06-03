@@ -43,7 +43,7 @@ $config = [
         ],
         'db' => $db,
         'urlManager' => [
-            'enablePrettyUrl' => true,
+            // 'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
                 'metrics' => 'site/metrics'
