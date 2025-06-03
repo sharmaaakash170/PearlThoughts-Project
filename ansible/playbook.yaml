@@ -108,12 +108,6 @@
         dest: /home/ubuntu/docker-swarm/deploy.yaml
         mode: '0644'
 
-    - name: Copy Docker Swarm node-exporter.yaml
-      copy:
-        src: ../docker-swarm/node-exporter.yaml
-        dest: /home/ubuntu/docker-swarm/node-exporter.yaml
-        mode: '0644'
-
     - name: Create NGINX site config directory if not exists
       file:
         path: /etc/nginx/sites-available
