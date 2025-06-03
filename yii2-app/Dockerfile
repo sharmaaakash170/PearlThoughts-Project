@@ -9,12 +9,12 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 COPY ./yii2-app /var/www/html/yii2-app
 
-WORKDIR /var/www/html
+WORKDIR /var/www/html/yii2-app
 
 RUN composer install --no-dev --optimize-autoloader
 
 COPY ./yii2-app/apache-site.conf /etc/apache2/sites-available/000-default.conf
 
-RUN chown -R www-data:www-data /var/www/html
+RUN chown -R www-data:www-data /var/www/html/yii2-app
 
 EXPOSE 80
