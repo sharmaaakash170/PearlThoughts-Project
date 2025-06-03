@@ -1,0 +1,17 @@
+services:
+  php:
+    image: yiisoftware/yii2-php:7.4-apache
+    volumes:
+      - ./:/app:delegated
+    ports:
+      - '8000:80'
+    environment:
+      - YII_ENV=prod
+    command: >
+      sh -c "
+      if [ ! -d /app/vendor ]; then
+        composer install --no-dev --optimize-autoloader
+      fi &&
+      chown -R www-data:www-data /app/runtime /app/web/assets &&
+      apache2-foreground
+      "

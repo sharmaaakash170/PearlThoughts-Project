@@ -1,0 +1,130 @@
+---
+- name: Setup EC2 with Docker Swarm and NGINX
+  hosts: web
+  become: true
+
+  tasks:
+    - name: Remove old Docker apt repo files
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /etc/apt/sources.list.d/docker.list
+        - /etc/apt/sources.list.d/docker.list.save
+        - /etc/apt/sources.list.d/docker-ce.list
+        - /etc/apt/sources.list.d/docker-ce.list.save
+
+    - name: Remove Docker repo lines from /etc/apt/sources.list.d/*.list files
+      shell: "grep -l 'download.docker.com' /etc/apt/sources.list.d/*.list | xargs -r rm -f"
+      args:
+        executable: /bin/bash
+
+    - name: Remove Docker repo lines directly from /etc/apt/sources.list
+      lineinfile:
+        path: /etc/apt/sources.list
+        regexp: '^deb .+download\.docker\.com.*$'
+        state: absent
+
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Install prerequisites
+      apt:
+        name:
+          - ca-certificates
+          - curl
+          - gnupg
+          - lsb-release
+        state: present
+
+    - name: Create /etc/apt/keyrings directory
+      file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: '0755'
+
+    - name: Download Docker GPG key to /etc/apt/keyrings/docker.asc
+      get_url:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        dest: /etc/apt/keyrings/docker.asc
+        mode: '0644'
+
+    - name: Add Docker repository with signed-by option
+      apt_repository:
+        repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release | lower }} stable"
+        state: present
+        filename: docker
+        update_cache: yes
+
+    - name: Install Docker packages
+      apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-compose-plugin
+        state: present
+        force_apt_get: yes
+
+    - name: Install other required packages
+      apt:
+        name:
+          - nginx
+          - git
+          - php-cli
+          - php-mysql
+        state: present
+
+    - name: Add ubuntu user to docker group
+      user:
+        name: ubuntu
+        groups: docker
+        append: yes
+
+    - name: Enable and start Docker service
+      systemd:
+        name: docker
+        enabled: yes
+        state: started
+
+    - name: Initialize Docker Swarm (if not already initialized)
+      command: docker swarm init --advertise-addr {{ ansible_default_ipv4.address }}
+      register: swarm_result
+      changed_when: "'This node is already part of a swarm' not in swarm_result.stderr"
+      ignore_errors: true
+
+    - name: Create NGINX site config directory if not exists
+      file:
+        path: /etc/nginx/sites-available
+        state: directory
+        mode: '0755'
+
+    - name: Deploy NGINX config
+      copy:
+        src: ../nginx/default.conf
+        dest: /etc/nginx/sites-available/yii2
+        mode: '0644'
+      notify: Restart NGINX
+
+    - name: Enable NGINX site
+      file:
+        src: /etc/nginx/sites-available/yii2
+        dest: /etc/nginx/sites-enabled/yii2
+        state: link
+        force: yes
+      notify: Restart NGINX
+
+    - name: Remove default NGINX config
+      file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+      notify: Restart NGINX
+
+  handlers:
+    - name: Restart NGINX
+      service:
+        name: nginx
+        state: restarted
