@@ -46,7 +46,7 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                'metrics' => 'monitoring/metrics'
+                'metrics' => 'site/metrics'
             ]
         ],
     ],

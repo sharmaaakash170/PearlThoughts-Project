@@ -125,4 +125,11 @@ class SiteController extends Controller
     {
         return $this->render('about');
     }
+    
+    public function actionMetrics()
+    {
+        header('Content-Type: text/plain');
+        echo "app_requests_total{route=\"metrics\"} 1\n";
+    }
+
 }
