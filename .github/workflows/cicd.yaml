@@ -22,7 +22,8 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/yii2-app:latest ../../yii2-app
+          ls -lrt ../../yii2-app/
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/yii2-app:latest ../../yii2-app/
           docker push ${{ secrets.DOCKER_USERNAME }}/yii2-app:latest
 
       - name: Deploy to EC2 via SSH
