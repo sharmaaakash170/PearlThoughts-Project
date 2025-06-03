@@ -125,11 +125,13 @@ class SiteController extends Controller
     {
         return $this->render('about');
     }
-    
+
     public function actionMetrics()
     {
-        header('Content-Type: text/plain');
-        echo "app_requests_total{route=\"metrics\"} 1\n";
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
+        \Yii::$app->response->headers->set('Content-Type', 'text/plain; charset=UTF-8');
+
+        return "app_requests_total{route=\"metrics\"} 1\n";
     }
 
 }
