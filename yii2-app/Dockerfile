@@ -22,3 +22,6 @@ ENV YII_ENV=prod
 ENV YII_ENV_DEV=0
 
 EXPOSE 80
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD curl -f http://localhost/yii2-app/web/index.php || exit 1

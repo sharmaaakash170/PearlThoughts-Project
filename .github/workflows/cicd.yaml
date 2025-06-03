@@ -53,8 +53,9 @@ jobs:
               docker service update --image ${{ secrets.DOCKER_USERNAME }}/yii2-app:latest yii2_yii2-app
             else
               docker stack deploy -c /home/ubuntu/docker-swarm/deploy.yaml yii2
+              docker stack deploy -c /home/ubuntu/docker-swarm/node-exporter.yaml yii2
             fi
-            
+
       - name: Check NGINX & Docker status
         uses: appleboy/ssh-action@v0.1.10
         with:
