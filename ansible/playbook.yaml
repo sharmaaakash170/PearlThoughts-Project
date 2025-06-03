@@ -158,23 +158,29 @@
             - job_name: 'yii2-app'
               metrics_path: /index.php?r=site/metrics
               static_configs:
-                - targets: ['localhost:8000']
+                - targets: ['localhost:80']
 
             - job_name: 'node_exporter'
               static_configs:
                 - targets: ['localhost:9100']
 
-    - name: Run Prometheus container
+    - name: Run node_exporter container (host network)
+      docker_container:
+        name: node_exporter
+        image: prom/node-exporter:latest
+        state: started
+        restart_policy: unless-stopped
+        network_mode: host
+
+    - name: Run Prometheus container (host network)
       docker_container:
         name: prometheus
         image: prom/prometheus:latest
         state: started
         restart_policy: unless-stopped
-        ports:
-          - "9090:9090"
+        network_mode: host
         volumes:
           - /etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-
 
   handlers:
     - name: Restart NGINX
