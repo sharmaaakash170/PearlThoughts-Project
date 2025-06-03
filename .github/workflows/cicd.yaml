@@ -19,18 +19,16 @@ jobs:
           sudo apt update
           sudo apt install -y ansible
 
-      - name: Setup SSH key for Ansible and SSH
+      - name: Setup SSH private key file
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
 
-      
       - name: Run Ansible Playbook
-        run: |
-          ansible-playbook -i ansible/inventory.ini ansible/playbook.yml --private-key <path_to_ssh_key> -u ubuntu
+        run: ansible-playbook -i ansible/inventory.ini ansible/playbook.yml --private-key ~/.ssh/id_rsa -u ubuntu
         env:
-          ANSIBLE_HOST_KEY_CHECKING: 'False'
+          ANSIBLE_HOST_KEY_CHECKING: "False"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
