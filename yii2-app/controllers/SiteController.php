@@ -128,14 +128,13 @@ class SiteController extends Controller
 
     public function actionMetrics()
     {
-        \Yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
-        \Yii::$app->response->headers->set('Content-Type', 'text/plain; version=0.0.4');
+        Yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
+        Yii::$app->response->headers->add('Content-Type', 'text/plain');
 
-        // Example metrics output
         return <<<METRICS
-    # HELP yii2_app_hello_total Number of hello requests
-    # TYPE yii2_app_hello_total counter
-    yii2_app_hello_total 1
+    # HELP yii2_app_up 1 if the app is up
+    # TYPE yii2_app_up gauge
+    yii2_app_up 1
     METRICS;
     }
 

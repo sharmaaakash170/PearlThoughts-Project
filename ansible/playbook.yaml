@@ -150,9 +150,12 @@
 
           scrape_configs:
             - job_name: 'yii2-app'
-              metrics_path: /index.php?r=site/metrics
               static_configs:
                 - targets: ['localhost:80']
+                  labels:
+                    __metrics_path__: /index.php
+              params:
+                r: [site/metrics]                 
 
             - job_name: 'node_exporter'
               static_configs:
