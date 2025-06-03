@@ -65,4 +65,3 @@ jobs:
             sudo systemctl status nginx
             docker service ls
             curl -I localhost
-
