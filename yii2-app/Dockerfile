@@ -19,8 +19,6 @@ RUN chown -R www-data:www-data /var/www/html/yii2-app
 
 ENV YII_ENV=prod 
 
-ENV YII_ENV_DEV=0
-
 EXPOSE 80
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \

@@ -158,7 +158,7 @@
             - job_name: 'yii2-app'
               metrics_path: /index.php?r=site/metrics
               static_configs:
-                - targets: ['localhost:80']
+                - targets: ['localhost:8000']
 
             - job_name: 'node_exporter'
               static_configs:
