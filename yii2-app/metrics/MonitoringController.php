@@ -12,14 +12,12 @@ class MonitoringController extends Controller
 {
     public function actionMetrics()
     {
-        // Disable layout and view rendering
         $this->enableCsrfValidation = false;
         Yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
         $this->layout = false;
 
         $registry = new CollectorRegistry(new InMemory());
 
-        // Example: Counter for requests
         $counter = $registry->getOrRegisterCounter('yii2_app', 'http_requests_total', 'Total HTTP requests');
         $counter->inc();
         
