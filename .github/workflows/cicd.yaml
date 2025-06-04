@@ -51,6 +51,9 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             IMAGE=${{ secrets.DOCKER_USERNAME }}/yii2-app
+            
+            echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
             docker pull $IMAGE:deploying
 
             if docker service inspect yii2_yii2-app > /dev/null 2>&1; then
@@ -73,6 +76,7 @@ jobs:
             echo "Health check passed. Tagging as stable."
             docker tag $IMAGE:deploying $IMAGE:stable
             docker push $IMAGE:stable
+
 
       - name: Check NGINX & Docker status
         uses: appleboy/ssh-action@v0.1.10
