@@ -149,9 +149,10 @@
             scrape_interval: 15s
 
           scrape_configs:
-            - job_name: 'yii2-app'
+            - job_name: 'yii2_app'
+              metrics_path: '/site/metrics'
               static_configs:
-                - targets: ['localhost:80']                
+                - targets: ['100.25.153.59:8000']               
 
             - job_name: 'node_exporter'
               static_configs:
