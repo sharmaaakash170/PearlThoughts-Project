@@ -38,10 +38,12 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/yii2-app:latest -f yii2-app/Dockerfile .
-          docker push ${{ secrets.DOCKER_USERNAME }}/yii2-app:latest
+          IMAGE=${{ secrets.DOCKER_USERNAME }}/yii2-app
+          docker build -t $IMAGE:latest -f yii2-app/Dockerfile .
+          docker tag $IMAGE:latest $IMAGE:deploying
+          docker push $IMAGE:deploying
 
-      - name: Deploy to EC2 via SSH
+      - name: Deploy and rollback on failure
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.EC2_HOST }}
