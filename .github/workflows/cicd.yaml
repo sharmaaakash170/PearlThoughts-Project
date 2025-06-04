@@ -48,12 +48,29 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            ls -lrt /home/ubuntu/docker-swarm
+            IMAGE=${{ secrets.DOCKER_USERNAME }}/yii2-app
+            docker pull $IMAGE:deploying
+
             if docker service inspect yii2_yii2-app > /dev/null 2>&1; then
-              docker service update --image ${{ secrets.DOCKER_USERNAME }}/yii2-app:latest yii2_yii2-app
+              docker service update --image $IMAGE:deploying yii2_yii2-app
             else
+              docker tag $IMAGE:deploying $IMAGE:latest
               docker stack deploy -c /home/ubuntu/docker-swarm/deploy.yaml yii2
             fi
+
+            echo "Waiting 10 seconds for the service to stabilize..."
+            sleep 10
+
+            echo "Performing health check..."
+            if ! curl -fs http://localhost > /dev/null; then
+              echo "Health check failed. Rolling back..."
+              docker service rollback yii2_yii2-app || true
+              exit 1
+            fi
+
+            echo "Health check passed. Tagging as stable."
+            docker tag $IMAGE:deploying $IMAGE:stable
+            docker push $IMAGE:stable
 
       - name: Check NGINX & Docker status
         uses: appleboy/ssh-action@v0.1.10
