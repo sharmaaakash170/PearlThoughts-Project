@@ -40,7 +40,7 @@ cd PearlThoughts-Project
 Push to the main branch and GitHub Actions will automatically trigger the deployment workflow defined in `.github/workflows/cicd.yaml`.
 ![Pipeline](artifacts/github-actions.png)
 
-4. **Manually Run Ansible Playbook** (optional):
+4. **Ansible Playbook will run automatically via Github Actions**:
 
 ```bash
 ansible-playbook -i inventory ansible/playbook.yaml
