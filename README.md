@@ -41,7 +41,7 @@ Push to the main branch and GitHub Actions will automatically trigger the deploy
 ![Pipeline](artifacts/github-actions.png)
 
 4. **Ansible Playbook will run automatically via Github Actions**:
-
+   Implemented rollback on failure functionality in Github Actions pipeline
 ```bash
 ansible-playbook -i inventory ansible/playbook.yaml
 ```
