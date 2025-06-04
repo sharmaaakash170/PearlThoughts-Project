@@ -79,4 +79,4 @@ http://<your-ec2-ip>:9090/targets
 
 ---
 
-Maintained by ![Aakash Sharma](https://github.com/sharmaaakash170)
+Maintained by [Aakash Sharma](https://github.com/sharmaaakash170)
